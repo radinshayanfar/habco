@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\FarazSMS;
+use App\Models\User;
 use GuzzleHttp\Exception\TransferException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 
 class TokenController extends Controller
@@ -49,7 +51,12 @@ class TokenController extends Controller
 
         if ($token === $request->token) {
             Redis::del($redisKey);
-            return response()->json(["message" => "Ok"], 200);
+
+            $user = User::where('phone', $phone)->first();
+            Auth::login($user);
+            $accessToken = $user->createToken('authToken')->plainTextToken;
+
+            return response()->json(["message" => "Ok", 'access_token' => $accessToken], 200);
         } else {
             return response()->json(["message" => "The code is incorrect."], 406);
         }

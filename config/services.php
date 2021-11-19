@@ -30,4 +30,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'sms' => [
+        'expire' => env("SMS_EXPIRE", 120),
+        'farazsms' => [
+            'url' => env('FARAZ_URL', 'https://rest.ippanel.com'),
+            'key' => env('FARAZ_KEY'),
+            'from' => env('FARAZ_FROM'),
+            'pattern' => env('FARAZ_PATTERN'),
+        ],
+    ]
+
+
 ];

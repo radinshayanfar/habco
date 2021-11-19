@@ -18,9 +18,15 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name',
+        'fname',
+        'lname',
         'email',
-        'password',
+        'national_number',
+        'address',
+        'phone',
+        'age',
+        'gender',
+//        'password',
     ];
 
     /**
@@ -29,7 +35,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
+//        'password',
         'remember_token',
     ];
 
@@ -38,7 +44,12 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+//    protected $casts = [
+//        'email_verified_at' => 'datetime',
+//    ];
+
+    public function isRegistrationComplete()
+    {
+        return $this->habco_id != null;
+    }
 }

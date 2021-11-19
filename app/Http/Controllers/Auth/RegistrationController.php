@@ -11,14 +11,13 @@ class RegistrationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-//            'fname' => "required|string|min:2",
-//            'lname' => "required|string|min:2",
             'email' => "required|email:rfc,dns",
             'phone' => "required|digits_between:8,20",
-            'national_number' => "required|digits:10"
+            'national_number' => "required|digits:10",
+            'role' => "required|alpha",
         ]);
 
-        $user = User::create(request(['email', 'phone', 'national_number']));
+        $user = User::create(request(['email', 'phone', 'national_number', 'role']));
 
         return response($user);
     }

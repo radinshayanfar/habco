@@ -21,6 +21,10 @@ class TokenController extends Controller
         $token = rand(1001, 9999);
         Redis::set("token:{$request->phone}", $token, 'EX', intval(config('services.sms.expire')));
 
+        if (config('app.env') != 'production') {
+            return $token;
+        }
+
         $client = new FarazSMS(
             config('services.sms.farazsms.url'),
             config('services.sms.farazsms.key'),
@@ -38,7 +42,7 @@ class TokenController extends Controller
             return $response;
 
         } catch (TransferException $e) {
-            if (config('app.env') != 'prduction') {
+            if (config('app.env') != 'production') {
                 throw $e;
             } else return response()->json(["message" => "Can't send OTP code."], 503);
         }
@@ -56,7 +60,7 @@ class TokenController extends Controller
             Auth::login($user);
             $accessToken = $user->createToken('authToken')->plainTextToken;
 
-            return response()->json(["message" => "Ok", 'access_token' => $accessToken], 200);
+            return response()->json(["message" => "Ok", "user" => $user, 'access_token' => $accessToken], 200);
         } else {
             return response()->json(["message" => "The code is incorrect."], 406);
         }

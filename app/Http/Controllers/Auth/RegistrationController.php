@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 
 class RegistrationController extends Controller
 {
+    use ApiResponder;
+
     public function store(Request $request)
     {
         $request->validate([
@@ -19,7 +22,7 @@ class RegistrationController extends Controller
 
         $user = User::create(request(['email', 'phone', 'national_number', 'role']));
 
-        return response($user);
+        return $this->success($user, "User created.", 200);
     }
 
 }

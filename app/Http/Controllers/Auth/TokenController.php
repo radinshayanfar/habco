@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\FarazSMS;
 use App\Models\User;
+use App\Traits\ApiResponder;
 use GuzzleHttp\Exception\TransferException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Redis;
 
 class TokenController extends Controller
 {
+    use ApiResponder;
+
     public function store(Request $request)
     {
         $request->validate([
@@ -22,7 +25,7 @@ class TokenController extends Controller
         Redis::set("token:{$request->phone}", $token, 'EX', intval(config('services.sms.expire')));
 
         if (config('app.debug') === true) {
-            return $token;
+            return $this->success(["token" => $token], "WARNING! THIS SHOULD ONLY BE USED IN DEBUG MODE.", 200);
         }
 
         $client = new FarazSMS(
@@ -39,12 +42,12 @@ class TokenController extends Controller
                     "verification-code" => strval($token),
                 ]
             );
-            return $response;
+            return $this->success($response, null, 200);
 
         } catch (TransferException $e) {
-            if (config('app.debug') === true) {
+            if (config('app.env') !== 'production') {
                 throw $e;
-            } else return response()->json(["message" => "Can't send OTP code."], 503);
+            } else return $this->failure("Can't send OTP code.", 503);
         }
     }
 
@@ -58,11 +61,11 @@ class TokenController extends Controller
 
             $user = User::where('phone', $phone)->first();
             Auth::login($user);
-//            $accessToken = $user->createToken('authToken')->plainTextToken;
+            $accessToken = $user->createToken('API Token')->plainTextToken;
 
-            return response()->json(["message" => "Ok", "user" => $user], 200);
+            return $this->success(["user" => $user, "token" => $accessToken], "Logged in.", 200);
         } else {
-            return response()->json(["message" => "The code is incorrect."], 406);
+            return $this->failure("The code is incorrect.", 406);
         }
     }
 }

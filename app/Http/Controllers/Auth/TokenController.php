@@ -58,9 +58,9 @@ class TokenController extends Controller
 
             $user = User::where('phone', $phone)->first();
             Auth::login($user);
-            $accessToken = $user->createToken('authToken')->plainTextToken;
+//            $accessToken = $user->createToken('authToken')->plainTextToken;
 
-            return response()->json(["message" => "Ok", "user" => $user, 'access_token' => $accessToken], 200);
+            return response()->json(["message" => "Ok", "user" => $user], 200);
         } else {
             return response()->json(["message" => "The code is incorrect."], 406);
         }

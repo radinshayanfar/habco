@@ -21,7 +21,7 @@ class TokenController extends Controller
         $token = rand(1001, 9999);
         Redis::set("token:{$request->phone}", $token, 'EX', intval(config('services.sms.expire')));
 
-        if (config('app.env') != 'production') {
+        if (config('app.debug') === true) {
             return $token;
         }
 
@@ -42,7 +42,7 @@ class TokenController extends Controller
             return $response;
 
         } catch (TransferException $e) {
-            if (config('app.env') != 'production') {
+            if (config('app.debug') === true) {
                 throw $e;
             } else return response()->json(["message" => "Can't send OTP code."], 503);
         }

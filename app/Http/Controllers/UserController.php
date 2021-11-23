@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 
-class RegistrationController extends Controller
+class UserController extends Controller
 {
     use ApiResponder;
 
@@ -22,7 +22,7 @@ class RegistrationController extends Controller
 
         $user = User::create(request(['email', 'phone', 'national_number', 'role']));
 
-        return $this->success($user, "User created.", 200);
+        return $this->success($user, "User created.", 201);
     }
 
 }

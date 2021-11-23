@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Auth\RegistrationController;
-use App\Http\Controllers\Auth\TokenController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Token\LoginTokenController;
+use App\Http\Controllers\Token\TokenController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,8 +20,25 @@ Route::get('/', function () {
     return response()->json("hello-world");
 });
 
-Route::resource('/register', RegistrationController::class)->only(['store']);
-Route::resource('/token', TokenController::class)->only(['store', 'update']);
+Route::middleware('guest:sanctum')->group(function () {
+    // Register route
+    Route::resource('/user', UserController::class)->only(['store']);
+    // Send OTP route
+    Route::resource('/login-token', LoginTokenController::class)->only('store');
+
+});
+
+Route::middleware(['auth:sanctum', 'ability:login'])->group(function () {
+    // Login route
+    Route::post('/token', [TokenController::class, 'store']);
+
+});
+
+Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
+    // Logout route
+    Route::delete('/token', [TokenController::class, 'destroy']);
+});
+
 
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();

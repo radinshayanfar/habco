@@ -49,6 +49,42 @@ class User extends Authenticatable
 //        'email_verified_at' => 'datetime',
 //    ];
 
+    /**
+     * Retrieves user by phone number
+     * @param $phone string
+     * @return User
+     */
+    public static function findByPhone($phone)
+    {
+        return self::firstWhere('phone', $phone);
+    }
+
+    /**
+     * Creates a login token for user
+     * This method revokes all users created tokens
+     * @return \Laravel\Sanctum\NewAccessToken
+     */
+    public function createLoginToken()
+    {
+        // Revoking all tokens
+        $this->tokens()->delete();
+
+        return $this->createToken('login-token', ['login']);
+    }
+
+    /**
+     * Creates an app token for user
+     * This method revokes all users created tokens
+     * @return \Laravel\Sanctum\NewAccessToken
+     */
+    public function createAppToken()
+    {
+        // Revoking all tokens
+        $this->tokens()->delete();
+
+        return $this->createToken('app-token', ['enter-app']);
+    }
+
     public function isRegistrationComplete()
     {
         return $this->habco_id != null;

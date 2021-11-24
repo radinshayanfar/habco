@@ -22,7 +22,7 @@ Route::get('/', function () {
 
 Route::middleware('guest:sanctum')->group(function () {
     // Register route
-    Route::resource('/user', UserController::class)->only(['store']);
+    Route::post('/user', [UserController::class, 'store']);
     // Send OTP route
     Route::resource('/login-token', LoginTokenController::class)->only('store');
 
@@ -37,9 +37,6 @@ Route::middleware(['auth:sanctum', 'ability:login'])->group(function () {
 Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
     // Logout route
     Route::delete('/token', [TokenController::class, 'destroy']);
+    Route::get('/user', [UserController::class, 'show']);
 });
 
-
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});

@@ -60,6 +60,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Retrieves user by national number
+     * @param $national_number string
+     * @return User
+     */
+    public static function findByNN($national_number)
+    {
+        return self::firstWhere('national_number', $national_number);
+    }
+
+    /**
      * Creates a login token for user
      * This method revokes all users created tokens
      * @return \Laravel\Sanctum\NewAccessToken

@@ -18,16 +18,22 @@ class LoginTokenController extends Controller
     {
         // Validating input data
         $request->validate([
-            'phone' => 'required|exists:users',
+            'phone' => 'required_without:national_number|exists:users',
+            'national_number' => 'required_without:phone|exists:users',
         ]);
+        if ($request->has('phone')) {
+            $user = User::findByPhone($request->phone);
+        } else {
+            $user = User::findByNN($request->national_number);
+        }
 
         // Creating random OTP
         $otp = rand(1001, 9999);
-        Redis::set("otp:{$request->phone}", $otp, 'EX', intval(config('services.sms.expire')));
+        Redis::set("otp:{$user->phone}", $otp, 'EX', intval(config('services.sms.expire')));
 
         // Sending OTP either via SMS or http (DEBUG ONLY)
         if (config('app.debug') === true) {
-            $loginToken = User::findByPhone($request->phone)->createLoginToken()->plainTextToken;
+            $loginToken = $user->createLoginToken()->plainTextToken;
             return $this->success(compact(["otp", "loginToken"]), "WARNING! THIS IS ONLY FOR DEBUGGING PURPOSES.\nToken={$otp}", 200);
         }
 
@@ -40,14 +46,14 @@ class LoginTokenController extends Controller
         try {
             $response = $client->sendPattern(
                 config('services.sms.farazsms.pattern'),
-                $request->phone,
+                $user->phone,
                 [
                     "verification-code" => strval($otp),
                 ]
             );
 
             // Issuing login token
-            $loginToken = User::findByPhone($request->phone)->createLoginToken()->plainTextToken;
+            $loginToken = $user->createLoginToken()->plainTextToken;
 
             return $this->success(compact(["loginToken"]), "Code has been sent to your number.", 200);
 

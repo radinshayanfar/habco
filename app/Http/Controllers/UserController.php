@@ -11,6 +11,11 @@ class UserController extends Controller
 {
     use ApiResponder;
 
+    public function show(Request $request)
+    {
+        return $this->success($request->user(), null, 200);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

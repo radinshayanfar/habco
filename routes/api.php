@@ -40,8 +40,10 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
     Route::delete('/token', [TokenController::class, 'destroy']);
     Route::get('/user', [UserController::class, 'show']);
 
-    Route::get('disease_record', [DiseaseRecordController::class, 'show']);
-    Route::post('disease_record', [DiseaseRecordController::class, 'store']);
-    Route::match(['put', 'patch'], 'disease_record', [DiseaseRecordController::class, 'update']);
+    Route::match(['put', 'patch'], '/user', [UserController::class, 'update']);
+
+    Route::get('/disease_record', [DiseaseRecordController::class, 'show']);
+    Route::post('/disease_record', [DiseaseRecordController::class, 'store']);
+    Route::match(['put', 'patch'], '/disease_record', [DiseaseRecordController::class, 'update']);
 });
 

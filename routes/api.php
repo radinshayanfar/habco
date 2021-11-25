@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DiseaseRecordController;
 use App\Http\Controllers\Token\LoginTokenController;
 use App\Http\Controllers\Token\TokenController;
 use App\Http\Controllers\UserController;
@@ -24,7 +25,7 @@ Route::middleware('guest:sanctum')->group(function () {
     // Register route
     Route::post('/user', [UserController::class, 'store']);
     // Send OTP route
-    Route::resource('/login-token', LoginTokenController::class)->only('store');
+    Route::apiResource('/login-token', LoginTokenController::class)->only('store');
 
 });
 
@@ -38,5 +39,9 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
     // Logout route
     Route::delete('/token', [TokenController::class, 'destroy']);
     Route::get('/user', [UserController::class, 'show']);
+
+    Route::get('disease_record', [DiseaseRecordController::class, 'show']);
+    Route::post('disease_record', [DiseaseRecordController::class, 'store']);
+    Route::match(['put', 'patch'], 'disease_record', [DiseaseRecordController::class, 'update']);
 });
 

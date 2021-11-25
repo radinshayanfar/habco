@@ -95,8 +95,25 @@ class User extends Authenticatable
         return $this->createToken('app-token', ['enter-app']);
     }
 
+    /**
+     * Check if user has filled disease records
+     * @return bool
+     */
+    public function hasFilledRecords()
+    {
+        return $this->diseaseRecord !== null;
+    }
+
     public function isRegistrationComplete()
     {
         return $this->habco_id != null;
+    }
+
+    /**
+     * Get the records associated with the user.
+     */
+    public function diseaseRecord()
+    {
+        return $this->hasOne(DiseaseRecord::class);
     }
 }

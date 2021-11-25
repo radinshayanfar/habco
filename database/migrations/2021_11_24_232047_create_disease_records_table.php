@@ -14,7 +14,7 @@ class CreateDiseaseRecordsTable extends Migration
     public function up()
     {
         Schema::create('disease_records', function (Blueprint $table) {
-            $table->integer('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->primary('user_id');
 
             $table->boolean('covid_19')->default(false);

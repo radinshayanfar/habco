@@ -1,0 +1,48 @@
+version: '3.9'
+services:
+  app-dev:
+    build:
+      context: ..
+      dockerfile: app-dev.dockerfile
+    volumes:
+      - ../:/app
+    ports:
+      - 8000:8000
+    profiles: ["dev"]
+  
+  app-prod:
+    build:
+      context: ..
+      dockerfile: docker/app-prod.dockerfile
+    working_dir: /var/www
+    env_file:
+      - ../.env.prod
+    profiles: ["prod"]
+
+  redis:
+    image: redis:6.2.6-alpine
+    volumes:
+      - redis-data:/data
+  
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    ports:
+      - 8000:80
+    profiles: ["prod"]
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=habco
+      - MYSQL_USER=habco
+      - MYSQL_PASSWORD=habco
+    volumes:
+      - mysql-data:/var/lib/mysql
+    profiles: ["prod"]
+
+volumes:
+  redis-data:
+  mysql-data:

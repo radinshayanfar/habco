@@ -9,6 +9,7 @@ use App\Traits\ApiResponder;
 use GuzzleHttp\Exception\TransferException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Validation\Rule;
 
 class LoginTokenController extends Controller
 {
@@ -18,14 +19,16 @@ class LoginTokenController extends Controller
     {
         // Validating input data
         $request->validate([
-            'phone' => 'required_without:national_number|exists:users',
-            'national_number' => 'required_without:phone|exists:users',
+            'national_number' => 'required',
+            'phone' => [
+                'required',
+                Rule::exists('users')->where(function ($query) use ($request) {
+                    return $query->where('national_number', $request->national_number);
+                }),
+            ],
         ]);
-        if ($request->has('phone')) {
-            $user = User::findByPhone($request->phone);
-        } else {
-            $user = User::findByNN($request->national_number);
-        }
+
+        $user = User::findByPhone($request->phone);
 
         // Creating random OTP
         $otp = rand(1001, 9999);

@@ -3,7 +3,7 @@ services:
   app-dev:
     build:
       context: ..
-      dockerfile: app-dev.dockerfile
+      dockerfile: docker/app-dev.dockerfile
     volumes:
       - ../:/app
     ports:

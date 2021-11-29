@@ -20,6 +20,12 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
+        if (config('app.debug') !== true) {
+            $request->validate([
+                'role' => 'not_in:admin',
+            ]);
+        }
+
         $user = User::create(request(['email', 'phone', 'national_number', 'role']));
 
         return $this->success($user, "User created.", 201);

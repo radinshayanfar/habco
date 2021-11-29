@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->bigInteger('phone')->unsigned()->nullable()->unique();
             $table->tinyInteger('age')->nullable();
             $table->enum('gender', ['male','female'])->nullable();
-            $table->integer('habco_id')->unique()->nullable();
+            $table->enum('role',['patient','doctor','nurse','pharmacist','admin']);
 
 //            $table->timestamp('email_verified_at')->nullable();
 //            $table->string('password');

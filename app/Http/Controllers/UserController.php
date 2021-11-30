@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Traits\ApiResponder;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -31,10 +32,10 @@ class UserController extends Controller
         return $this->success($user, "User created.", 201);
     }
 
-    public function update(UpdateUserRequest $request)
+    public function update(UpdateUserRequest $request, Authenticatable $user)
     {
-        $request->user()->update($request->all());
-        return $this->success($request->user());
+        $user->update($request->all());
+        return $this->success($user);
     }
 
 }

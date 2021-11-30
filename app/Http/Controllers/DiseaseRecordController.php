@@ -6,6 +6,7 @@ use App\Models\DiseaseRecord;
 use App\Http\Requests\StoreDiseaseRecordRequest;
 use App\Http\Requests\UpdateDiseaseRecordRequest;
 use App\Traits\ApiResponder;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Symfony\Component\HttpFoundation\Request;
 
 class DiseaseRecordController extends Controller
@@ -18,9 +19,9 @@ class DiseaseRecordController extends Controller
      * @param \App\Http\Requests\StoreDiseaseRecordRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreDiseaseRecordRequest $request)
+    public function store(StoreDiseaseRecordRequest $request, Authenticatable $user)
     {
-        $record = $request->user()->diseaseRecord()->create($request->all());
+        $record = $user->diseaseRecord()->create($request->all());
         return $this->success($record, "Record created.", 201);
     }
 
@@ -30,9 +31,9 @@ class DiseaseRecordController extends Controller
      * @param \App\Models\DiseaseRecord $diseaseRecord
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request)
+    public function show(Authenticatable $user)
     {
-        return $this->success($request->user()->diseaseRecord);
+        return $this->success($user->diseaseRecord);
     }
 
     /**
@@ -42,9 +43,9 @@ class DiseaseRecordController extends Controller
      * @param \App\Models\DiseaseRecord $diseaseRecord
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateDiseaseRecordRequest $request)
+    public function update(UpdateDiseaseRecordRequest $request, Authenticatable $user)
     {
-        $diseaseRecord = $request->user()->diseaseRecord;
+        $diseaseRecord = $user->diseaseRecord;
         $diseaseRecord->update($request->all());
         return $this->success($diseaseRecord);
     }

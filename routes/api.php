@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DiseaseRecordController;
+use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Token\LoginTokenController;
 use App\Http\Controllers\Token\TokenController;
 use App\Http\Controllers\UserController;
@@ -23,7 +23,7 @@ Route::get('/', function () {
 
 Route::middleware('guest:sanctum')->group(function () {
     // Register route
-    Route::post('/user', [UserController::class, 'store']);
+    Route::post('/user', [UserController::class, 'store'])->name('user.store');
     // Send OTP route
     Route::apiResource('/login-token', LoginTokenController::class)->only('store');
 
@@ -31,19 +31,23 @@ Route::middleware('guest:sanctum')->group(function () {
 
 Route::middleware(['auth:sanctum', 'ability:login'])->group(function () {
     // Login route
-    Route::post('/token', [TokenController::class, 'store']);
+    Route::post('/token', [TokenController::class, 'store'])->name('token.store');;
 
 });
 
 Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
     // Logout route
-    Route::delete('/token', [TokenController::class, 'destroy']);
-    Route::get('/user', [UserController::class, 'show']);
+    Route::delete('/token', [TokenController::class, 'destroy'])->name('token.destroy');
 
-    Route::match(['put', 'patch'], '/user', [UserController::class, 'update']);
+    Route::name('user.')->group(function () {
+        Route::get('/user', [UserController::class, 'show'])->name('show');;
+        Route::match(['put', 'patch'], '/user', [UserController::class, 'update'])->name('edit');;
+    });
 
-    Route::get('/disease_record', [DiseaseRecordController::class, 'show']);
-    Route::post('/disease_record', [DiseaseRecordController::class, 'store']);
-    Route::match(['put', 'patch'], '/disease_record', [DiseaseRecordController::class, 'update']);
+    Route::name('patient.')->group(function () {
+        Route::get('/patient', [PatientController::class, 'show'])->name('show');
+        Route::match(['put', 'patch'], '/patient', [PatientController::class, 'update'])->name('edit');
+    });
+
 });
 

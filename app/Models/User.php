@@ -118,21 +118,8 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user has filled disease records
-     * @return bool
-     */
-    public function hasFilledRecords()
-    {
-        return $this->diseaseRecord !== null;
-    }
-
-    /**
      * Get the records associated with the user.
      */
-    public function diseaseRecord()
-    {
-        return $this->hasOne(DiseaseRecord::class);
-    }
 
     public function patient()
     {

@@ -16,6 +16,7 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->binary('document');
+            $table->string('doc_type');
             $table->boolean('verified')->default(false);
             $table->text('verification_explanation')->nullable();
             $table->timestamps();

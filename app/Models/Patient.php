@@ -14,8 +14,11 @@ class Patient extends Model
      *
      * @var string[]
      */
-    protected $fillable = [
-        'med_staff',
+    protected $guarded = [
+        'user_id',
+        'habco_id',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -24,6 +27,15 @@ class Patient extends Model
      * @var array
      */
     protected $casts = [
+        'covid_19' => 'boolean',
+        'respiratory' => 'boolean',
+        'infectious' => 'boolean',
+        'vascular' => 'boolean',
+        'cancer' => 'boolean',
+        'imuloical' => 'boolean',
+        'diabetes' => 'boolean',
+        'dangerous_area' => 'boolean',
+        'pet' => 'boolean',
         'med_staff' => 'boolean',
     ];
 

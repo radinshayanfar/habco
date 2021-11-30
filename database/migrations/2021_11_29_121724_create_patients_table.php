@@ -15,7 +15,18 @@ class CreatePatientsTable extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
+
+            $table->boolean('covid_19')->nullable();
+            $table->boolean('respiratory')->nullable();
+            $table->boolean('infectious')->nullable();
+            $table->boolean('vascular')->nullable();
+            $table->boolean('cancer')->nullable();
+            $table->boolean('imuloical')->nullable();
+            $table->boolean('diabetes')->nullable();
+            $table->boolean('dangerous_area')->nullable();
+            $table->boolean('pet')->nullable();
             $table->boolean('med_staff')->nullable();
+
             $table->integer('habco_id')->unique()->nullable();
 
             $table->timestamps();

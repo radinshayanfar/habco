@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Patient;
-use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
+use App\Models\Patient;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class PatientController extends Controller
 {
@@ -19,25 +19,14 @@ class PatientController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StorePatientRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StorePatientRequest $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function show(Patient $patient)
+    public function show(Authenticatable $user)
     {
-        //
+        return $user->patient;
     }
 
     /**
@@ -47,19 +36,15 @@ class PatientController extends Controller
      * @param  \App\Models\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePatientRequest $request, Patient $patient)
+    public function update(UpdatePatientRequest $request, Authenticatable $user)
     {
-        //
+        $patient = $user->patient;
+        $patient->update($request->all());
+        return $patient;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Patient $patient)
+    public function generateHabcoId(Authenticatable $user)
     {
-        //
+
     }
 }

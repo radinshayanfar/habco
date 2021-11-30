@@ -13,7 +13,7 @@ class UpdatePatientRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,16 @@ class UpdatePatientRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'covid_19' => 'boolean',
+            'respiratory' => 'boolean',
+            'infectious' => 'boolean',
+            'vascular' => 'boolean',
+            'cancer' => 'boolean',
+            'imuloical' => 'boolean',
+            'diabetes' => 'boolean',
+            'dangerous_area' => 'boolean',
+            'pet' => 'boolean',
+            'med_staff' => 'boolean',
         ];
     }
 }

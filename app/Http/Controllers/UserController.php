@@ -26,7 +26,7 @@ class UserController extends Controller
             ]);
         }
 
-        $user = User::create(request(['email', 'phone', 'national_number', 'role']));
+        $user = User::createWithRole($request);
 
         return $this->success($user, "User created.", 201);
     }

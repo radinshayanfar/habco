@@ -15,7 +15,7 @@ class CreatePatientsTable extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->boolean('med_staff')->default(false);
+            $table->boolean('med_staff')->nullable();
             $table->integer('habco_id')->unique()->nullable();
 
             $table->timestamps();

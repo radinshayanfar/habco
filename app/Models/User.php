@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Symfony\Component\HttpFoundation\Request;
 
 class User extends Authenticatable
 {
@@ -69,6 +69,28 @@ class User extends Authenticatable
         return self::firstWhere('national_number', $national_number);
     }
 
+    public static function createWithRole(Request $request)
+    {
+        $user = User::create(request(['email', 'phone', 'national_number', 'role']));
+
+        switch ($request->role) {
+            case 'patient':
+                $user->patient()->create();
+                break;
+            case 'doctor':
+                $user->doctor()->create();
+                break;
+            case 'nurse':
+                $user->nurse()->create();
+                break;
+            case 'pharmacist':
+                $user->pharmacist()->create();
+                break;
+        }
+
+        return $user;
+    }
+
     /**
      * Creates a login token for user
      * This method revokes all users created tokens
@@ -104,16 +126,31 @@ class User extends Authenticatable
         return $this->diseaseRecord !== null;
     }
 
-    public function isRegistrationComplete()
-    {
-        return $this->habco_id != null;
-    }
-
     /**
      * Get the records associated with the user.
      */
     public function diseaseRecord()
     {
         return $this->hasOne(DiseaseRecord::class);
+    }
+
+    public function patient()
+    {
+        return $this->hasOne(Patient::class);
+    }
+
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
+
+    public function nurse()
+    {
+        return $this->hasOne(Nurse::class);
+    }
+
+    public function pharmacist()
+    {
+        return $this->hasOne(Pharmacist::class);
     }
 }

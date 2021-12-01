@@ -69,24 +69,29 @@ class User extends Authenticatable
         return self::firstWhere('national_number', $national_number);
     }
 
+    public function createRoleRecord()
+    {
+        switch ($this->role) {
+            case 'patient':
+                $this->patient()->create();
+                break;
+            case 'doctor':
+                $this->doctor()->create();
+                break;
+            case 'nurse':
+                $this->nurse()->create();
+                break;
+            case 'pharmacist':
+                $this->pharmacist()->create();
+                break;
+        }
+    }
+
     public static function createWithRole(Request $request)
     {
         $user = User::create(request(['email', 'phone', 'national_number', 'role']));
 
-        switch ($request->role) {
-            case 'patient':
-                $user->patient()->create();
-                break;
-            case 'doctor':
-                $user->doctor()->create();
-                break;
-            case 'nurse':
-                $user->nurse()->create();
-                break;
-            case 'pharmacist':
-                $user->pharmacist()->create();
-                break;
-        }
+        $user->createRoleRecord();
 
         return $user;
     }

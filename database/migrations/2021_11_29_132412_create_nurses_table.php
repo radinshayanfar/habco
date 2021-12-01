@@ -18,7 +18,7 @@ class CreateNursesTable extends Migration
             $table->unsignedBigInteger('cv_id')->nullable();
             $table->unsignedBigInteger('document_id')->nullable();
             $table->binary('image')->nullable();
-            $table->string('image_type');
+            $table->string('image_type')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

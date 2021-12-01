@@ -15,8 +15,9 @@ class CreateDoctorsTable extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('cv_id')->nullable();
-            $table->unsignedBigInteger('document_id')->nullable();
+            $table->string('specialization')->nullable();
+            $table->unsignedBigInteger('cv_id')->nullable()->unique();
+            $table->unsignedBigInteger('document_id')->nullable()->unique();
             $table->binary('image')->nullable();
             $table->string('image_type')->nullable();
             $table->timestamps();

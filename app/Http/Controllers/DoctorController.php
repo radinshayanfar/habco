@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDoctorRequest;
 use App\Http\Requests\UpdateDoctorRequest;
+use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
 use App\Traits\ApiResponder;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -29,7 +31,7 @@ class DoctorController extends Controller
         ]);
 
         $query = DB::table('users')
-            ->select(['users.id', 'fname', 'lname', 'gender', 'd.specialization as specialization', 'd.image as image'])
+            ->select(['users.id', 'fname', 'lname', 'gender', 'd.specialization as specialization'])
             ->join('doctors as d', 'users.id', '=', 'd.user_id')
             ->where('role', 'doctor')
             ->join('documents', 'd.document_id', '=', 'documents.id')
@@ -88,5 +90,25 @@ class DoctorController extends Controller
     public function destroy(Doctor $doctor)
     {
         //
+    }
+
+    public function imageUpload(Request $request, Authenticatable $user)
+    {
+        $request->validate([
+            'image' => 'string',
+            'image_type' => 'string',
+        ]);
+
+        $image = base64_decode($request->get('image'));
+
+        $user->doctor()->update(['image' => $image, 'image_type' => $request->image_type]);
+
+        return $this->success(new DoctorResource($user->doctor), 'image uploaded.');
+    }
+
+    public function imageShow(Doctor $doctor)
+    {
+        return response($doctor->image)
+            ->header('Content-Type', $doctor->image_type);
     }
 }

@@ -53,6 +53,10 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
 
     Route::name('doctor.')->group(function () {
         Route::get('/doctor', [DoctorController::class, 'index'])->name('index');
+        Route::name('image.')->group(function () {
+            Route::post('/doctor/image', [DoctorController::class, 'imageUpload'])->name('store');
+            Route::get('/doctor/{doctor}/image', [DoctorController::class, 'imageShow'])->name('show');
+        });
 //        Route::get('/doctor', [DoctorController::class, 'show'])->name('show');
 //        Route::match(['put', 'patch'], '/doctor', [DoctorController::class, 'update'])->name('edit');
     });

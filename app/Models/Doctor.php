@@ -32,6 +32,13 @@ class Doctor extends Model
     ];
 
     /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'user_id';
+
+    /**
      * Get the records associated with the user.
      */
     public function user()

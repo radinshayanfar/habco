@@ -42,12 +42,10 @@ class DocumentController extends Controller
         ]);
 
         $document->verified = $request->verified;
-        $request->whenHas('verification_explanation', function ($input) use ($document) {
-            $document->verification_explanation = $input;
-        });
+        $document->verification_explanation = $request->input('verification_explanation', null);
         $document->save();
 
-        return $this->success($document, 'Document ' . $document->verified ? 'verified' : 'unverified');
+        return $this->success(new DocumentResource($document), 'Document ' . $document->verified ? 'verified' : 'unverified');
     }
 
     public function show(Document $document)

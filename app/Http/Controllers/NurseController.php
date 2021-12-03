@@ -2,31 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NurseResource;
 use App\Models\Nurse;
 use App\Http\Requests\StoreNurseRequest;
-use App\Http\Requests\UpdateNurseRequest;
+use App\Http\Requests\NurseRequest;
+use App\Traits\ApiResponder;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class NurseController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $query = DB::table('users')
+            ->select(['users.id', 'fname', 'lname', 'gender'])
+            ->join('nurses as n', 'users.id', '=', 'n.user_id')
+            ->where('role', 'nurse')
+            ->join('documents', 'n.document_id', '=', 'documents.id')
+            ->where('documents.verified', true)
+            ->orderBy('lname', 'asc')->paginate(10);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreNurseRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreNurseRequest $request)
-    {
-        //
+        return $this->success($query);
     }
 
     /**
@@ -37,29 +42,31 @@ class NurseController extends Controller
      */
     public function show(Nurse $nurse)
     {
-        //
+        return new NurseResource($nurse);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateNurseRequest  $request
+     * @param  \App\Http\Requests\NurseRequest  $request
      * @param  \App\Models\Nurse  $nurse
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateNurseRequest $request, Nurse $nurse)
+    public function update(NurseRequest $request, Authenticatable $user)
     {
-        //
+        $fields = $request->all();
+
+        $request->whenHas('image', function ($input) use ($fields) {
+            $fields['image'] = base64_decode($input);
+        });
+        $user->nurse()->update($fields);
+
+        return $this->success(new NurseResource($user->nurse), 'Edited.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Nurse  $nurse
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Nurse $nurse)
+    public function imageShow(Nurse $nurse)
     {
-        //
+        return response($nurse->image)
+            ->header('Content-Type', $nurse->image_type);
     }
 }

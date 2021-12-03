@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreNurseRequest extends FormRequest
+class NurseRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class StoreNurseRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class StoreNurseRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'image' => 'string|nullable',
+            'image_type' => 'string|nullable',
         ];
     }
 }

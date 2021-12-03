@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\NurseController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Token\LoginTokenController;
 use App\Http\Controllers\Token\TokenController;
@@ -56,6 +57,13 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
         Route::match(['put', 'patch'], '/doctor', [DoctorController::class, 'update'])->name('update');
         Route::get('/doctor/{doctor}/image', [DoctorController::class, 'imageShow'])->name('image.show');
         Route::get('/doctor/{doctor}', [DoctorController::class, 'show'])->name('show');
+    });
+
+    Route::name('nurse.')->group(function () {
+        Route::get('/nurse', [NurseController::class, 'index'])->name('index');
+        Route::match(['put', 'patch'], '/nurse', [NurseController::class, 'update'])->name('update');
+        Route::get('/nurse/{nurse}/image', [NurseController::class, 'imageShow'])->name('image.show');
+        Route::get('/nurse/{nurse}', [NurseController::class, 'show'])->name('show');
     });
 
     Route::name('document.')->group(function () {

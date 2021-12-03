@@ -15,9 +15,10 @@ class Nurse extends Model
      * @var string[]
      */
     protected $fillable = [
-        'cv_id',
-        'document_id',
+//        'cv_id',
+//        'document_id',
         'image',
+        'image_type',
     ];
 
     /**
@@ -30,10 +31,27 @@ class Nurse extends Model
     ];
 
     /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'user_id';
+
+    /**
      * Get the records associated with the user.
      */
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function document()
+    {
+        return $this->belongsTo(Document::class);
+    }
+
+    public function cv()
+    {
+        return $this->belongsTo(Document::class);
     }
 }

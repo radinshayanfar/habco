@@ -36,6 +36,7 @@ class DocumentController extends Controller
         } else {
             $document = $user->$role->document()->create(['file' => $file, 'file_type' => $request->file_type]);
             $user->$role()->update([$type_id => $document->id]);
+            $user->refresh();
         }
 
         return $this->success(new DocumentResource($user->$role->$type), 'Uploaded');

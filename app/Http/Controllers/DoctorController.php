@@ -68,7 +68,7 @@ class DoctorController extends Controller
     {
         $fields = $request->all();
 
-        $request->whenHas('image', function ($input) use ($fields) {
+        $request->whenHas('image', function ($input) use (&$fields) {
             $fields['image'] = base64_decode($input);
         });
         $user->doctor()->update($fields);

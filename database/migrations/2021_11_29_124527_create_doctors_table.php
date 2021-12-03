@@ -14,7 +14,7 @@ class CreateDoctorsTable extends Migration
     public function up()
     {
         Schema::create('doctors', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->primary();
             $table->string('specialization')->nullable();
             $table->unsignedBigInteger('cv_id')->nullable()->unique();
             $table->unsignedBigInteger('document_id')->nullable()->unique();

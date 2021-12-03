@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Doctor;
 use App\Http\Requests\StoreDoctorRequest;
 use App\Http\Requests\UpdateDoctorRequest;
+use App\Models\Doctor;
 use App\Traits\ApiResponder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Request;
-use function MongoDB\BSON\toJSON;
 
 class DoctorController extends Controller
 {
@@ -38,7 +37,7 @@ class DoctorController extends Controller
             ->orderBy('specialization', 'asc')
             ->orderBy('lname', 'asc');
         $request->whenHas('query', function ($input) use (&$query, $request) {
-            $loweredQuery = Str::lower($request->input('query'));
+            $loweredQuery = Str::lower($input);
             $query = $query->where(DB::raw("LOWER({$request->queryBy})"), 'like', "%{$loweredQuery}%");
         });
         $query = $query->paginate(10);

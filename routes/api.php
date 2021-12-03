@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Token\LoginTokenController;
 use App\Http\Controllers\Token\TokenController;
@@ -52,6 +53,12 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
 
     Route::name('doctor.')->group(function () {
         Route::get('/doctor', [DoctorController::class, 'index'])->name('index');
+//        Route::get('/doctor', [DoctorController::class, 'show'])->name('show');
+//        Route::match(['put', 'patch'], '/doctor', [DoctorController::class, 'update'])->name('edit');
+    });
+
+    Route::name('document.')->group(function () {
+        Route::post('/doctor/document', [DocumentController::class, 'doctorEdit'])->name('store');
 //        Route::get('/doctor', [DoctorController::class, 'show'])->name('show');
 //        Route::match(['put', 'patch'], '/doctor', [DoctorController::class, 'update'])->name('edit');
     });

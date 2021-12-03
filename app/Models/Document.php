@@ -15,9 +15,9 @@ class Document extends Model
      * @var string[]
      */
     protected $fillable = [
-        'document',
-        'doc_type',
-        'verified',
+        'file',
+        'file_type',
+//        'verified',
         'verification_explanation',
     ];
 
@@ -29,4 +29,9 @@ class Document extends Model
     protected $casts = [
         'verified' => 'boolean',
     ];
+
+//    public function doctor()
+//    {
+//        return $this->hasOne(Document::class, 'document_id');
+//    }
 }

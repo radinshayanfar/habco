@@ -15,9 +15,11 @@ class Doctor extends Model
      * @var string[]
      */
     protected $fillable = [
+        'specialization',
         'cv_id',
         'document_id',
         'image',
+        'image_type',
     ];
 
     /**
@@ -35,5 +37,10 @@ class Doctor extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function document()
+    {
+        return $this->belongsTo(Document::class);
     }
 }

@@ -14,8 +14,8 @@ class DocumentFactory extends Factory
     public function definition()
     {
         return [
-            'document' => $this->faker->sentence(),
-            'doc_type' => 'application/pdf',
+            'file' => $this->faker->sentence(),
+            'file_type' => 'application/pdf',
         ];
     }
 }

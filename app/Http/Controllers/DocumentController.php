@@ -28,10 +28,6 @@ class DocumentController extends Controller
         } else {
             $document = $user->doctor->document()->create(['file' => $file, 'file_type' => $request->file_type]);
             $user->doctor()->update(['document_id' => $document->id]);
-//            $doctor = $user->doctor;
-//            $doctor->specialization = 'ajab';
-////            $doctor->dd();
-//            $doctor->save();
         }
 
         return $this->success(new DocumentResource($user->doctor->document), 'Document uploaded');
@@ -52,5 +48,13 @@ class DocumentController extends Controller
         $document->save();
 
         return $this->success($document, 'Document ' . $document->verified ? 'verified' : 'unverified');
+    }
+
+    public function show(Document $document)
+    {
+        $this->authorize('show', $document);
+
+        return response($document->file)
+            ->header('Content-Type', $document->file_type);
     }
 }

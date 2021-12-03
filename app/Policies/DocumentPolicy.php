@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Document;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -27,5 +28,16 @@ class DocumentPolicy
     public function verify(User $user)
     {
         return $user->role === 'admin';
+    }
+
+    public function show(User $user, Document $document)
+    {
+        return $user->role == 'admin'
+            || $user?->doctor?->document_id == $document->id
+            || $user?->doctor?->cv_id == $document->id
+            || $user?->nurse?->document_id == $document->id
+            || $user?->nurse?->cv_id == $document->id
+            || $user?->pharmacist?->cv_id == $document->id;
+
     }
 }

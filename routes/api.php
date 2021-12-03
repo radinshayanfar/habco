@@ -59,7 +59,7 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
     });
 
     Route::name('document.')->group(function () {
-        Route::post('/doctor/document', [DocumentController::class, 'doctorUpdate'])->name('store');
+        Route::post('/document', [DocumentController::class, 'store'])->name('store');
         Route::match(['put', 'patch'], '/document/{document}', [DocumentController::class, 'adminUpdate'])->name('update');
         Route::get('/document/{document}', [DocumentController::class, 'show'])->name('show');
     });

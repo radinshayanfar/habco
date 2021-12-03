@@ -12,9 +12,14 @@ class DocumentController extends Controller
 {
     use ApiResponder;
 
-    public function doctorUpdate(DocumentRequest $request, Authenticatable $user)
+    public function store(DocumentRequest $request, Authenticatable $user)
     {
         $this->authorize('upload', Document::class);
+
+        $role = $user->role;
+        if ($role == 'pharmacist') {
+            $request->validate(['type' => 'not_in:document']);
+        }
 
         $request->validate([
             'file' => 'required',
@@ -26,14 +31,14 @@ class DocumentController extends Controller
         $type = $request->type;
         $type_id = $type . '_id';
 
-        if ($user->doctor->$type_id !== null) {
-            $user->doctor->document()->update(['file' => $file, 'file_type' => $request->file_type, 'verified' => false]);
+        if ($user->$role->$type_id !== null) {
+            $user->$role->document()->update(['file' => $file, 'file_type' => $request->file_type, 'verified' => false]);
         } else {
-            $document = $user->doctor->document()->create(['file' => $file, 'file_type' => $request->file_type]);
-            $user->doctor()->update([$type_id => $document->id]);
+            $document = $user->$role->document()->create(['file' => $file, 'file_type' => $request->file_type]);
+            $user->$role()->update([$type_id => $document->id]);
         }
 
-        return $this->success(new DocumentResource($user->doctor->$type), 'Uploaded');
+        return $this->success(new DocumentResource($user->$role->$type), 'Uploaded');
     }
 
     public function adminUpdate(DocumentRequest $request, Document $document)

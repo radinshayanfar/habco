@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDoctorRequest;
 use App\Http\Requests\DoctorRequest;
 use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;

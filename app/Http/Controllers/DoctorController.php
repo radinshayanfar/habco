@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDoctorRequest;
-use App\Http\Requests\UpdateDoctorRequest;
+use App\Http\Requests\DoctorRequest;
 use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
 use App\Traits\ApiResponder;
@@ -48,17 +48,6 @@ class DoctorController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreDoctorRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreDoctorRequest $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Doctor  $doctor
@@ -66,44 +55,26 @@ class DoctorController extends Controller
      */
     public function show(Doctor $doctor)
     {
-        //
+        return new DoctorResource($doctor);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateDoctorRequest  $request
-     * @param  \App\Models\Doctor  $doctor
+     * @param \App\Http\Requests\DoctorRequest $request
+     * @param Authenticatable $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateDoctorRequest $request, Doctor $doctor)
+    public function update(DoctorRequest $request, Authenticatable $user)
     {
-        //
-    }
+        $fields = $request->all();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Doctor  $doctor
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Doctor $doctor)
-    {
-        //
-    }
+        $request->whenHas('image', function ($input) use ($fields) {
+            $fields['image'] = base64_decode($input);
+        });
+        $user->doctor()->update($fields);
 
-    public function imageUpload(Request $request, Authenticatable $user)
-    {
-        $request->validate([
-            'image' => 'string',
-            'image_type' => 'string',
-        ]);
-
-        $image = base64_decode($request->get('image'));
-
-        $user->doctor()->update(['image' => $image, 'image_type' => $request->image_type]);
-
-        return $this->success(new DoctorResource($user->doctor), 'image uploaded.');
+        return $this->success(new DoctorResource($user->doctor), 'Edited.');
     }
 
     public function imageShow(Doctor $doctor)

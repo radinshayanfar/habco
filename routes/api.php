@@ -43,27 +43,24 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
 
     Route::name('user.')->group(function () {
         Route::get('/user', [UserController::class, 'show'])->name('show');;
-        Route::match(['put', 'patch'], '/user', [UserController::class, 'update'])->name('edit');;
+        Route::match(['put', 'patch'], '/user', [UserController::class, 'update'])->name('update');;
     });
 
     Route::name('patient.')->group(function () {
         Route::get('/patient', [PatientController::class, 'show'])->name('show');
-        Route::match(['put', 'patch'], '/patient', [PatientController::class, 'update'])->name('edit');
+        Route::match(['put', 'patch'], '/patient', [PatientController::class, 'update'])->name('update');
     });
 
     Route::name('doctor.')->group(function () {
         Route::get('/doctor', [DoctorController::class, 'index'])->name('index');
-        Route::name('image.')->group(function () {
-            Route::post('/doctor/image', [DoctorController::class, 'imageUpload'])->name('store');
-            Route::get('/doctor/{doctor}/image', [DoctorController::class, 'imageShow'])->name('show');
-        });
-//        Route::get('/doctor', [DoctorController::class, 'show'])->name('show');
-//        Route::match(['put', 'patch'], '/doctor', [DoctorController::class, 'update'])->name('edit');
+        Route::match(['put', 'patch'], '/doctor', [DoctorController::class, 'update'])->name('update');
+        Route::get('/doctor/{doctor}/image', [DoctorController::class, 'imageShow'])->name('image.show');
+        Route::get('/doctor/{doctor}', [DoctorController::class, 'show'])->name('show');
     });
 
     Route::name('document.')->group(function () {
-        Route::post('/doctor/document', [DocumentController::class, 'doctorEdit'])->name('store');
-        Route::match(['put', 'patch'], '/document/{document}', [DocumentController::class, 'adminEdit'])->name('edit');
+        Route::post('/doctor/document', [DocumentController::class, 'doctorUpdate'])->name('store');
+        Route::match(['put', 'patch'], '/document/{document}', [DocumentController::class, 'adminUpdate'])->name('update');
         Route::get('/document/{document}', [DocumentController::class, 'show'])->name('show');
     });
 

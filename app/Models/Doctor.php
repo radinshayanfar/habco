@@ -16,8 +16,8 @@ class Doctor extends Model
      */
     protected $fillable = [
         'specialization',
-        'cv_id',
-        'document_id',
+//        'cv_id',
+//        'document_id',
         'image',
         'image_type',
     ];

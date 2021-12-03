@@ -12,7 +12,7 @@ class DocumentController extends Controller
 {
     use ApiResponder;
 
-    public function doctorEdit(DocumentRequest $request, Authenticatable $user)
+    public function doctorUpdate(DocumentRequest $request, Authenticatable $user)
     {
         $this->authorize('upload', Document::class);
 
@@ -33,7 +33,7 @@ class DocumentController extends Controller
         return $this->success(new DocumentResource($user->doctor->document), 'Document uploaded');
     }
 
-    public function adminEdit(DocumentRequest $request, Document $document)
+    public function adminUpdate(DocumentRequest $request, Document $document)
     {
         $this->authorize('verify', Document::class);
 

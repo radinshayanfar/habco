@@ -50,4 +50,9 @@ class Doctor extends Model
     {
         return $this->belongsTo(Document::class);
     }
+
+    public function cv()
+    {
+        return $this->belongsTo(Document::class);
+    }
 }

@@ -29,6 +29,7 @@ class DocumentRequest extends FormRequest
 //                'regex:/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/',
             ],
             'file_type' => 'string|nullable',
+            'type' => 'in:document,cv',
             'verified' => 'boolean',
             'verification_explanation' => 'string|nullable',
         ];

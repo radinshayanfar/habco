@@ -15,7 +15,7 @@ class Pharmacist extends Model
      * @var string[]
      */
     protected $fillable = [
-        'cv_id',
+//        'cv_id',
     ];
 
     /**
@@ -28,10 +28,22 @@ class Pharmacist extends Model
     ];
 
     /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'user_id';
+
+    /**
      * Get the records associated with the user.
      */
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function cv()
+    {
+        return $this->belongsTo(Document::class);
     }
 }

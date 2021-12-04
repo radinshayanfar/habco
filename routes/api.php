@@ -53,6 +53,8 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
         Route::get('/me', [PatientController::class, 'show'])->name('me.show');
         Route::match(['put', 'patch'], '/', [PatientController::class, 'update'])->name('update');
 
+        Route::get('/doctor', [PatientController::class, 'doctorIndex'])->name('doctor.show');
+        Route::get('/nurse', [PatientController::class, 'nurseIndex'])->name('nurse.show');
         Route::post('/doctor/{doctor}', [PatientController::class, 'attachDoctor'])->name('doctor.attach');
         Route::post('/nurse/{nurse}', [PatientController::class, 'attachNurse'])->name('nurse.attach');
     });

@@ -58,6 +58,16 @@ class PatientController extends Controller
 
     }
 
+    public function doctorIndex(Authenticatable $user)
+    {
+        return $this->success(DoctorResource::collection($user->patient->doctors));
+    }
+
+    public function nurseIndex(Authenticatable $user)
+    {
+        return $this->success(NurseResource::collection($user->patient->nurses));
+    }
+
     public function attachDoctor(Authenticatable $user, Doctor $doctor)
     {
         $user->patient->doctors()->attach($doctor->user_id);

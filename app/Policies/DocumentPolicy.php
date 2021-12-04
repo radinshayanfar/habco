@@ -32,12 +32,9 @@ class DocumentPolicy
 
     public function show(User $user, Document $document)
     {
+        $role = $user->role;
         return $user->role == 'admin'
-            || $user?->doctor?->document_id == $document->id
-            || $user?->doctor?->cv_id == $document->id
-            || $user?->nurse?->document_id == $document->id
-            || $user?->nurse?->cv_id == $document->id
-            || $user?->pharmacist?->cv_id == $document->id;
-
+            || $user->$role->document_id == $document->id
+            || $user->$role->cv_id == $document->id;
     }
 }

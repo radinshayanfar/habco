@@ -48,34 +48,37 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
         Route::match(['put', 'patch'], '/user', [UserController::class, 'update'])->name('update');;
     });
 
-    Route::name('patient.')->group(function () {
-        Route::get('/patient', [PatientController::class, 'show'])->name('show');
-        Route::match(['put', 'patch'], '/patient', [PatientController::class, 'update'])->name('update');
+    Route::prefix('patient')->name('patient.')->group(function () {
+        Route::get('/', [PatientController::class, 'show'])->name('show');
+        Route::match(['put', 'patch'], '/', [PatientController::class, 'update'])->name('update');
+
+        Route::post('/doctor/{doctor}', [PatientController::class, 'attachDoctor'])->name('doctor.attach');
+        Route::post('/nurse/{nurse}', [PatientController::class, 'attachNurse'])->name('nurse.attach');
     });
 
-    Route::name('doctor.')->group(function () {
-        Route::get('/doctor', [DoctorController::class, 'index'])->name('index');
-        Route::match(['put', 'patch'], '/doctor', [DoctorController::class, 'update'])->name('update');
-        Route::get('/doctor/{doctor}/image', [DoctorController::class, 'imageShow'])->name('image.show');
-        Route::get('/doctor/{doctor}', [DoctorController::class, 'show'])->name('show');
+    Route::prefix('doctor')->name('doctor.')->group(function () {
+        Route::get('/', [DoctorController::class, 'index'])->name('index');
+        Route::match(['put', 'patch'], '/', [DoctorController::class, 'update'])->name('update');
+        Route::get('/{doctor}/image', [DoctorController::class, 'imageShow'])->name('image.show');
+        Route::get('/{doctor}', [DoctorController::class, 'show'])->name('show');
     });
 
-    Route::name('nurse.')->group(function () {
-        Route::get('/nurse', [NurseController::class, 'index'])->name('index');
-        Route::match(['put', 'patch'], '/nurse', [NurseController::class, 'update'])->name('update');
-        Route::get('/nurse/{nurse}/image', [NurseController::class, 'imageShow'])->name('image.show');
-        Route::get('/nurse/{nurse}', [NurseController::class, 'show'])->name('show');
+    Route::prefix('nurse')->name('nurse.')->group(function () {
+        Route::get('/', [NurseController::class, 'index'])->name('index');
+        Route::match(['put', 'patch'], '/', [NurseController::class, 'update'])->name('update');
+        Route::get('/{nurse}/image', [NurseController::class, 'imageShow'])->name('image.show');
+        Route::get('/{nurse}', [NurseController::class, 'show'])->name('show');
     });
 
-    Route::name('pharmacist.')->group(function () {
-        Route::get('/pharmacist', [PharmacistController::class, 'index'])->name('index');
-        Route::get('/pharmacist/{pharmacist}', [PharmacistController::class, 'show'])->name('show');
+    Route::prefix('pharmacist')->name('pharmacist.')->group(function () {
+        Route::get('/', [PharmacistController::class, 'index'])->name('index');
+        Route::get('/{pharmacist}', [PharmacistController::class, 'show'])->name('show');
     });
 
-    Route::name('document.')->group(function () {
-        Route::post('/document', [DocumentController::class, 'store'])->name('store');
-        Route::match(['put', 'patch'], '/document/{document}', [DocumentController::class, 'adminUpdate'])->name('update');
-        Route::get('/document/{document}', [DocumentController::class, 'show'])->name('show');
+    Route::prefix('document')->name('document.')->group(function () {
+        Route::post('/', [DocumentController::class, 'store'])->name('store');
+        Route::match(['put', 'patch'], '/{document}', [DocumentController::class, 'adminUpdate'])->name('update');
+        Route::get('/{document}', [DocumentController::class, 'show'])->name('show');
     });
 
 });

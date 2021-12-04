@@ -40,10 +40,27 @@ class Patient extends Model
     ];
 
     /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'user_id';
+
+    /**
      * Get the records associated with the user.
      */
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function doctors()
+    {
+        return $this->belongsToMany(Doctor::class, null, 'patient_id', 'doctor_id');
+    }
+
+    public function nurses()
+    {
+        return $this->belongsToMany(Nurse::class, null, 'patient_id', 'nurse_id');
     }
 }

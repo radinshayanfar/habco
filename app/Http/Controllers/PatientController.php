@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePatientRequest;
+use App\Http\Resources\DoctorResource;
+use App\Http\Resources\NurseResource;
+use App\Models\Doctor;
+use App\Models\Nurse;
 use App\Models\Patient;
+use App\Traits\ApiResponder;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class PatientController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +33,7 @@ class PatientController extends Controller
      */
     public function show(Authenticatable $user)
     {
-        return $user->patient;
+        return $this->success($user->patient);
     }
 
     /**
@@ -38,13 +45,26 @@ class PatientController extends Controller
      */
     public function update(UpdatePatientRequest $request, Authenticatable $user)
     {
-        $patient = $user->patient;
-        $patient->update($request->all());
-        return $patient;
+        $user->patient()->update($request->all());
+        return $this->success($user->patient, 'Patient updated.');
     }
 
     public function generateHabcoId(Authenticatable $user)
     {
 
+    }
+
+    public function attachDoctor(Authenticatable $user, Doctor $doctor)
+    {
+        $user->patient->doctors()->attach($doctor->user_id);
+
+        return $this->success(DoctorResource::collection($user->patient->doctors), 'Doctor added.');
+    }
+
+    public function attachNurse(Authenticatable $user, Nurse $nurse)
+    {
+        $user->patient->nurses()->attach($nurse->user_id);
+
+        return $this->success(NurseResource::collection($user->patient->nurses), 'Nurse added.');
     }
 }

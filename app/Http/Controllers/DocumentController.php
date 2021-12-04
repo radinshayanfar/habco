@@ -32,9 +32,9 @@ class DocumentController extends Controller
         $type_id = $type . '_id';
 
         if ($user->$role->$type_id !== null) {
-            $user->$role->document()->update(['file' => $file, 'file_type' => $request->file_type, 'verified' => false]);
+            $user->$role->$type()->update(['file' => $file, 'file_type' => $request->file_type, 'verified' => false]);
         } else {
-            $document = $user->$role->document()->create(['file' => $file, 'file_type' => $request->file_type]);
+            $document = $user->$role->$type()->create(['file' => $file, 'file_type' => $request->file_type]);
             $user->$role()->update([$type_id => $document->id]);
             $user->refresh();
         }

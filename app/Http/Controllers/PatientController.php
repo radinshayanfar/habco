@@ -20,9 +20,13 @@ class PatientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Authenticatable $user)
     {
-        //
+        $role = $user->role;
+        $patients = $user->$role->patients->load('user');
+        $patients->makeHidden(['pivot']);
+
+        return $patients;
     }
 
     /**

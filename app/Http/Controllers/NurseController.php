@@ -21,15 +21,23 @@ class NurseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Authenticatable $user)
     {
         $query = DB::table('users')
             ->select(['users.id', 'fname', 'lname', 'gender'])
             ->join('nurses as n', 'users.id', '=', 'n.user_id')
-            ->where('role', 'nurse')
-            ->join('documents', 'n.document_id', '=', 'documents.id')
-            ->where('documents.verified', true)
-            ->orderBy('lname', 'asc')->paginate(10);
+            ->where('role', 'nurse');
+        if ($user->role !== 'admin') {
+            $query = $query->join('documents', 'n.document_id', '=', 'documents.id')
+                ->where('documents.verified', true)
+                ->orderBy('lname', 'asc');
+        } else {
+            $query = $query->leftJoin('documents', 'n.document_id', '=', 'documents.id')
+                ->orderBy('documents.verified')
+                ->orderBy('documents.updated_at')
+                ->orderByDesc('n.updated_at');
+        }
+        $query = $query->paginate(10);
 
         return $this->success($query);
     }
@@ -37,7 +45,7 @@ class NurseController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Nurse  $nurse
+     * @param \App\Models\Nurse $nurse
      * @return \Illuminate\Http\Response
      */
     public function show(Nurse $nurse)
@@ -48,8 +56,8 @@ class NurseController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\NurseRequest  $request
-     * @param  \App\Models\Nurse  $nurse
+     * @param \App\Http\Requests\NurseRequest $request
+     * @param \App\Models\Nurse $nurse
      * @return \Illuminate\Http\Response
      */
     public function update(NurseRequest $request, Authenticatable $user)

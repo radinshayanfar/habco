@@ -20,7 +20,7 @@ class DoctorController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request, Authenticatable $user)
     {
         $request->validate([
             'query' => 'string|nullable',
@@ -32,11 +32,18 @@ class DoctorController extends Controller
         $query = DB::table('users')
             ->select(['users.id', 'fname', 'lname', 'gender', 'd.specialization as specialization'])
             ->join('doctors as d', 'users.id', '=', 'd.user_id')
-            ->where('role', 'doctor')
-            ->join('documents', 'd.document_id', '=', 'documents.id')
-            ->where('documents.verified', true)
-            ->orderBy('specialization', 'asc')
-            ->orderBy('lname', 'asc');
+            ->where('role', 'doctor');
+        if ($user->role !== 'admin') {
+            $query = $query->join('documents', 'd.document_id', '=', 'documents.id')
+                ->where('documents.verified', true)
+                ->orderBy('specialization', 'asc')
+                ->orderBy('lname', 'asc');
+        } else {
+            $query = $query->leftJoin('documents', 'd.document_id', '=', 'documents.id')
+                ->orderBy('documents.verified')
+                ->orderBy('documents.updated_at')
+                ->orderByDesc('d.updated_at');
+        }
         $request->whenHas('query', function ($input) use (&$query, $request) {
             $loweredQuery = Str::lower($input);
             $query = $query->where(DB::raw("LOWER({$request->queryBy})"), 'like', "%{$loweredQuery}%");

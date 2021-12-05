@@ -20,6 +20,7 @@ class PharmacistResource extends JsonResource
             'id' => $this->user_id,
             'cv_id' => $this->mergeWhen($isForThem, $this->cv_id),
             'user' => $this->whenLoaded('user')->only(['fname', 'lname', 'address']),
+            'user' => $this->when($this->relationLoaded('user'), $this->user->only(['fname', 'lname', 'address'])),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

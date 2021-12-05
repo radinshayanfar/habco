@@ -23,7 +23,7 @@ class DoctorResource extends JsonResource
                 'document_id' => $this->document_id,
                 'cv_id' => $this->cv_id,
             ]),
-            'user' => $this->whenLoaded('user')->only(['fname', 'lname']),
+            'user' => $this->when($this->relationLoaded('user'), $this->user->only(['fname', 'lname'])),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

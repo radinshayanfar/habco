@@ -13,7 +13,7 @@ class UpdatePrescriptionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class UpdatePrescriptionRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'text' => 'prohibited',
+            'status' => 'in:filled,transmitted',
+            'doctor_id' => 'prohibited',
+            'patient_id' => 'prohibited',
+            'pharmacist_id' => 'prohibited',
         ];
     }
 }

@@ -83,6 +83,9 @@ class PrescriptionController extends Controller
      */
     public function update(UpdatePrescriptionRequest $request, Prescription $prescription)
     {
-        //
+        $this->authorize('setStatus', $prescription);
+
+        $prescription->update($request->all());
+        return $this->success($prescription, 'Prescription status changed.');
     }
 }

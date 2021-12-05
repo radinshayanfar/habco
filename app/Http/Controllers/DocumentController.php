@@ -61,6 +61,13 @@ class DocumentController extends Controller
     {
         $this->authorize('show', $document);
 
+        return $this->success(new DocumentResource($document));
+    }
+
+    public function download(Document $document)
+    {
+        $this->authorize('show', $document);
+
         return response($document->file)
             ->header('Content-Type', $document->file_type);
     }

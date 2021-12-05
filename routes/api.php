@@ -82,6 +82,7 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
         Route::post('/', [DocumentController::class, 'store'])->name('store');
         Route::match(['put', 'patch'], '/{document}', [DocumentController::class, 'adminUpdate'])->name('update');
         Route::get('/{document}', [DocumentController::class, 'show'])->name('show');
+        Route::get('/{document}/download', [DocumentController::class, 'download'])->name('download');
     });
 
 });

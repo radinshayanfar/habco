@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DrugController;
 use App\Http\Controllers\InstructionController;
 use App\Http\Controllers\NurseController;
 use App\Http\Controllers\PatientController;
@@ -100,6 +101,8 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
         Route::get('/', [InstructionController::class, 'index'])->name('index');
         Route::get('/{instruction}', [InstructionController::class, 'show'])->name('show');
     });
+
+    Route::apiResource('/drug', DrugController::class);
 
 });
 

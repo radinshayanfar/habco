@@ -51,4 +51,9 @@ class Pharmacist extends Model
     {
         return $this->hasMany(Prescription::class, 'pharmacist_id');
     }
+
+    public function drugs()
+    {
+        return $this->hasMany(Drug::class, 'pharmacist_id');
+    }
 }

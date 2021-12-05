@@ -13,7 +13,7 @@ class UpdateDrugRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class UpdateDrugRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'string|nullable',
+            'count' => 'integer|gte:0',
         ];
     }
 }

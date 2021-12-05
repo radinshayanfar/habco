@@ -14,11 +14,13 @@ class DoctorResource extends JsonResource
      */
     public function toArray($request)
     {
+        $isForThem = $request->user()->role === 'admin'
+            || $this->user_id === $request->user()->id;
         return [
             'id' => $this->user_id,
             'specialization' => $this->specialization,
-            'document_id' => $this->document_id,
-            'cv_id' => $this->cv_id,
+            'document_id' => $this->when($isForThem, $this->document_id),
+            'cv_id' => $this->when($isForThem, $this->cv_id),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

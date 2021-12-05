@@ -25,8 +25,21 @@ class Prescription extends Model
      * @var array
      */
     protected $casts = [
-//        'cv_id' => 'integer',
+        'patient_id' => 'integer',
+        'doctor_id' => 'integer',
+        'pharmacist_id' => 'integer',
     ];
+
+    public static function lazyLoadOnRole($prescriptions, $role)
+    {
+        if ($role === 'doctor') {
+            $prescriptions->load('patient.user');
+        } elseif ($role === 'patient') {
+            $prescriptions->load('doctor.user', 'pharmacist.user');
+        } elseif ($role === 'pharmacist') {
+            $prescriptions->load('patient.user');
+        }
+    }
 
     public function patient()
     {

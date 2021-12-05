@@ -89,7 +89,8 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
     Route::prefix('prescription')->name('prescription.')->group(function () {
         Route::post('/patient/{patient}', [PrescriptionController::class, 'store'])->name('store');
         Route::get('/', [PrescriptionController::class, 'index'])->name('index');
-//        Route::get('/{pharmacist}', [PharmacistController::class, 'show'])->name('show');
+        Route::get('/{prescription}', [PrescriptionController::class, 'show'])->name('show');
+        Route::match(['put', 'patch'], '/{prescription}/pharmacist/{pharmacist}', [PrescriptionController::class, 'sendToPharmacist'])->name('send');
     });
 
 });

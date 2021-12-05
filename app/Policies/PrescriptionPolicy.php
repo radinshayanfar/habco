@@ -28,11 +28,18 @@ class PrescriptionPolicy
 
     public function sendToPharmacy(User $user, Prescription $prescription)
     {
-        return $prescription->user_id === $user->id;
+        return $prescription->patient_id === $user->id;
     }
 
     public function setStatus(User $user, Prescription $prescription)
     {
         return $prescription->pharmacist_id === $user->id;
+    }
+
+    public function show(User $user, Prescription $prescription)
+    {
+        $id = $user->role . '_id';
+        return $user->role === 'admin'
+            || $prescription->$id === $user->id;
     }
 }

@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PrescriptionResource;
 use App\Models\Patient;
+use App\Models\Pharmacist;
 use App\Models\Prescription;
 use App\Http\Requests\StorePrescriptionRequest;
 use App\Http\Requests\UpdatePrescriptionRequest;
 use App\Traits\ApiResponder;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PrescriptionController extends Controller
 {
@@ -22,15 +25,8 @@ class PrescriptionController extends Controller
     public function index(Authenticatable $user)
     {
         $role = $user->role;
-        $prescriptions = $user->$role->prescriptions;
-        if ($role === 'doctor') {
-            $prescriptions->load('patient.user');
-        } elseif ($role === 'patient') {
-            $prescriptions->load('doctor.user');
-            $prescriptions->load('pharmacist.user');
-        } elseif ($role === 'pharmacist') {
-            $prescriptions->load('patient.user');
-        }
+        $prescriptions = $user->$role->prescriptions()->orderByDesc('updated_at')->get();
+        Prescription::lazyLoadOnRole($prescriptions, $role);
 
         return $this->success(PrescriptionResource::collection($prescriptions));
     }
@@ -61,7 +57,21 @@ class PrescriptionController extends Controller
      */
     public function show(Prescription $prescription)
     {
-        //
+        $this->authorize('show', $prescription);
+        Prescription::lazyLoadOnRole($prescription, Auth::user()->role);
+
+        return $this->success(new PrescriptionResource($prescription));
+    }
+
+    public function sendToPharmacist(Prescription $prescription, Pharmacist $pharmacist)
+    {
+        $this->authorize('sendToPharmacy', $prescription);
+
+        $prescription->pharmacist_id = $pharmacist->user_id;
+        $prescription->status = 'sent';
+        $prescription->save();
+
+        return $this->success(new PrescriptionResource($prescription), 'Prescription sent to pharmacy.');
     }
 
     /**

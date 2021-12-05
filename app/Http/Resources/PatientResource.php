@@ -17,7 +17,7 @@ class PatientResource extends JsonResource
         $role = $request->user()->role;
         return [
             'id' => $this->user_id,
-            $this->mergeWhen($role === 'admin' || $role === 'doctor', [
+            $this->mergeWhen($role === 'admin' || $role === 'doctor' || $role === 'nurse', [
                 'covid_19' => $this->covid_19,
                 'respiratory' => $this->respiratory,
                 'infectious' => $this->infectious,

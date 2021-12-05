@@ -59,4 +59,9 @@ class Nurse extends Model
     {
         return $this->belongsToMany(Patient::class, null, 'nurse_id', 'patient_id');
     }
+
+    public function instructions()
+    {
+        return $this->hasMany(Instruction::class, 'nurse_id');
+    }
 }

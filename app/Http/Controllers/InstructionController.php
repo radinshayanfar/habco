@@ -2,31 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InstructionRequest;
+use App\Http\Resources\InstructionResource;
 use App\Models\Instruction;
-use App\Http\Requests\StoreInstructionRequest;
-use App\Http\Requests\UpdateInstructionRequest;
+use App\Models\Patient;
+use App\Traits\ApiResponder;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 class InstructionController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Authenticatable $user)
     {
-        //
+        $role = $user->role;
+        $instructions = $user->$role->instructions()->orderByDesc('updated_at')->get();
+        Instruction::lazyLoadOnRole($instructions, $role);
+
+        return $this->success(InstructionResource::collection($instructions));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreInstructionRequest  $request
+     * @param  \App\Http\Requests\InstructionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreInstructionRequest $request)
+    public function store(InstructionRequest $request, Authenticatable $user, Patient $patient)
     {
-        //
+        $this->authorize('write', [Instruction::class, $patient]);
+
+        $instruction = new Instruction($request->only(['text']));
+        $instruction->patient_id = $patient->user_id;
+
+        $user->nurse->instructions()->save($instruction);
+        $instruction->refresh();
+        return $this->success($instruction, 'Instruction created.');
     }
 
     /**
@@ -37,29 +54,9 @@ class InstructionController extends Controller
      */
     public function show(Instruction $instruction)
     {
-        //
-    }
+        $this->authorize('show', $instruction);
+        Instruction::lazyLoadOnRole($instruction, Auth::user()->role);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateInstructionRequest  $request
-     * @param  \App\Models\Instruction  $instruction
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateInstructionRequest $request, Instruction $instruction)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Instruction  $instruction
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Instruction $instruction)
-    {
-        //
+        return $this->success(new InstructionResource($instruction));
     }
 }

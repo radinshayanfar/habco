@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class NurseResource extends JsonResource
+class InstructionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,13 +14,11 @@ class NurseResource extends JsonResource
      */
     public function toArray($request)
     {
-        $isForThem = $request->user()->role === 'admin'
-            || $this->user_id === $request->user()->id;
         return [
-            'id' => $this->user_id,
-            'document_id' => $this->when($isForThem, $this->document_id),
-            'cv_id' => $this->when($isForThem, $this->cv_id),
-            'user' => $this->whenLoaded('user')->only(['fname', 'lname']),
+            'id' => $this->id,
+            'text' => $this->text,
+            'patient' => new PatientResource($this->whenLoaded('patient')),
+            'nurse' => new NurseResource($this->whenLoaded('nurse')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

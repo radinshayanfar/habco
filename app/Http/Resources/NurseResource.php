@@ -20,7 +20,7 @@ class NurseResource extends JsonResource
             'id' => $this->user_id,
             'document_id' => $this->when($isForThem, $this->document_id),
             'cv_id' => $this->when($isForThem, $this->cv_id),
-            'user' => $this->when($this->relationLoaded('user'), $this->user->only(['fname', 'lname'])),
+            'user' => $this->when($this->relationLoaded('user'), $this->user->only(['fname', 'lname', 'phone'])),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -46,4 +46,9 @@ class Pharmacist extends Model
     {
         return $this->belongsTo(Document::class);
     }
+
+    public function prescriptions()
+    {
+        return $this->hasMany(Prescription::class, 'pharmacist_id');
+    }
 }

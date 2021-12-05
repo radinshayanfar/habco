@@ -2,20 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PrescriptionResource;
+use App\Models\Patient;
 use App\Models\Prescription;
 use App\Http\Requests\StorePrescriptionRequest;
 use App\Http\Requests\UpdatePrescriptionRequest;
+use App\Traits\ApiResponder;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class PrescriptionController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Authenticatable $user)
     {
-        //
+        $role = $user->role;
+        $prescriptions = $user->$role->prescriptions;
+        if ($role === 'doctor') {
+            $prescriptions->load('patient.user');
+        } elseif ($role === 'patient') {
+            $prescriptions->load('doctor.user');
+            $prescriptions->load('pharmacist.user');
+        } elseif ($role === 'pharmacist') {
+            $prescriptions->load('patient.user');
+        }
+
+        return $this->success(PrescriptionResource::collection($prescriptions));
     }
 
     /**
@@ -24,9 +41,16 @@ class PrescriptionController extends Controller
      * @param  \App\Http\Requests\StorePrescriptionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePrescriptionRequest $request)
+    public function store(StorePrescriptionRequest $request, Authenticatable $user, Patient $patient)
     {
-        //
+        $this->authorize('write', [Prescription::class, $patient]);
+
+        $prescription = new Prescription($request->only(['text']));
+        $prescription->patient_id = $patient->user_id;
+
+        $user->doctor->prescriptions()->save($prescription);
+        $prescription->refresh();
+        return $this->success($prescription, 'Prescription created.');
     }
 
     /**
@@ -48,17 +72,6 @@ class PrescriptionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(UpdatePrescriptionRequest $request, Prescription $prescription)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Prescription  $prescription
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Prescription $prescription)
     {
         //
     }

@@ -5,6 +5,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\NurseController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacistController;
+use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\Token\LoginTokenController;
 use App\Http\Controllers\Token\TokenController;
 use App\Http\Controllers\UserController;
@@ -83,6 +84,12 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
         Route::match(['put', 'patch'], '/{document}', [DocumentController::class, 'adminUpdate'])->name('update');
         Route::get('/{document}', [DocumentController::class, 'show'])->name('show');
         Route::get('/{document}/download', [DocumentController::class, 'download'])->name('download');
+    });
+
+    Route::prefix('prescription')->name('prescription.')->group(function () {
+        Route::post('/patient/{patient}', [PrescriptionController::class, 'store'])->name('store');
+        Route::get('/', [PrescriptionController::class, 'index'])->name('index');
+//        Route::get('/{pharmacist}', [PharmacistController::class, 'show'])->name('show');
     });
 
 });

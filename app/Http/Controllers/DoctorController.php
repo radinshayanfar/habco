@@ -48,7 +48,8 @@ class DoctorController extends Controller
             $loweredQuery = Str::lower($input);
             $query = $query->where(DB::raw("LOWER({$request->queryBy})"), 'like', "%{$loweredQuery}%");
         });
-        $query = $query->paginate(10);
+//        $query = $query->paginate(10);
+        $query = $query->get();
 
         return $this->success($query);
     }

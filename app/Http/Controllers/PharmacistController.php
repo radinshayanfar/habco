@@ -33,7 +33,8 @@ class PharmacistController extends Controller
                 ->orderBy('documents.updated_at')
                 ->orderByDesc('ph.updated_at');
         }
-        $query = $query->paginate(10);
+//        $query = $query->paginate(10);
+        $query = $query->get();
 
         return $this->success($query);
     }

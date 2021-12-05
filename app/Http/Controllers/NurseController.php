@@ -37,7 +37,8 @@ class NurseController extends Controller
                 ->orderBy('documents.updated_at')
                 ->orderByDesc('n.updated_at');
         }
-        $query = $query->paginate(10);
+//        $query = $query->paginate(10);
+        $query = $query->get();
 
         return $this->success($query);
     }

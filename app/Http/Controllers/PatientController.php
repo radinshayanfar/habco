@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Resources\DoctorResource;
 use App\Http\Resources\NurseResource;
+use App\Http\Resources\PatientResource;
 use App\Models\Doctor;
 use App\Models\Nurse;
 use App\Models\Patient;
@@ -24,9 +25,8 @@ class PatientController extends Controller
     {
         $role = $user->role;
         $patients = $user->$role->patients->load('user');
-        $patients->makeHidden(['pivot']);
 
-        return $patients;
+        return $this->success(PatientResource::collection($patients));
     }
 
     /**

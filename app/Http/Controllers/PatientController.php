@@ -53,9 +53,16 @@ class PatientController extends Controller
         return $this->success($user->patient, 'Patient updated.');
     }
 
-    public function generateHabcoId(Authenticatable $user)
+    public function showHabcoId(Authenticatable $user)
     {
-
+        if ($user->patient->habco_id !== null) {
+            return $this->success($user->patient->habco_id);
+        }
+        if (!$user->patient->isRegistrationComplete()) {
+            return $this->failure('Registration is not completed.');
+        }
+        $habco_id = $user->patient->generateHabcoId();
+        return $this->success(['habco_id' => $habco_id], 'HabcoID created.');
     }
 
     public function doctorIndex(Authenticatable $user)

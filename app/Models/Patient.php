@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Patient extends Model
 {
@@ -45,6 +46,31 @@ class Patient extends Model
      * @var string
      */
     protected $primaryKey = 'user_id';
+
+    public function isRegistrationComplete()
+    {
+        foreach ([$this->user->fname, $this->user->lname, $this->user->address, $this->user->age, $this->user->gender,
+                     $this->covid_19, $this->respiratory, $this->infectious, $this->vascular, $this->cancer,
+                     $this->imuloical, $this->diabetes, $this->dangerous_area, $this->pet, $this->med_staff] as $field) {
+            if ($field === null)
+                return false;
+        }
+        return true;
+    }
+
+    public function generateHabcoId()
+    {
+        $habco_id = null;
+        DB::transaction(function () use (&$habco_id) {
+            $id = DB::table('habco_id')->first()->id;
+            DB::table('habco_id')->update(['id' => $id + 1]);
+            $random = rand(100, 999);
+            $habco_id = intval($id . $random);
+            $this->habco_id = $habco_id;
+            $this->save();
+        });
+        return $habco_id;
+    }
 
     /**
      * Get the records associated with the user.

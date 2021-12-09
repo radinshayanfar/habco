@@ -8,7 +8,10 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Traits\ApiResponder;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -27,7 +30,19 @@ class UserController extends Controller
             ]);
         }
 
-        $user = User::createWithRole($request);
+        try {
+            $user = User::createWithRole($request);
+        } catch (QueryException $ex) {
+            $startWithField = Str::after($ex->getMessage(), 'UNIQUE constraint failed: users.');
+            if (Str::startsWith($startWithField, ['email', 'national_number', 'phone'])) {
+                $field = Str::before($startWithField, ' ');
+                $fieldStr = preg_replace('/_/', ' ', $field);
+                throw ValidationException::withMessages([
+                     $field => "A user with this $fieldStr has been registered before.",
+                ]);
+            }
+            throw $ex;
+        }
 
         return $this->success($user, "User created.", 201);
     }

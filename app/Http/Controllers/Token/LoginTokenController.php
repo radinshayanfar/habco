@@ -26,6 +26,8 @@ class LoginTokenController extends Controller
                     return $query->where('national_number', $request->national_number);
                 }),
             ],
+        ], [
+            'phone.exists' => 'Phone and national number doesn\'t match.',
         ]);
 
         $user = User::findByPhone($request->phone);

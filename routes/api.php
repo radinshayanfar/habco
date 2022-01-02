@@ -80,6 +80,7 @@ Route::middleware(['auth:sanctum', 'ability:enter-app'])->group(function () {
     Route::prefix('pharmacist')->name('pharmacist.')->group(function () {
         Route::get('/', [PharmacistController::class, 'index'])->name('index');
         Route::get('/{pharmacist}', [PharmacistController::class, 'show'])->name('show');
+        Route::get('/{pharmacist}/drug', [PharmacistController::class, 'drugShow'])->name('drug.show');
     });
 
     Route::prefix('document')->name('document.')->group(function () {

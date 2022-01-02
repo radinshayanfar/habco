@@ -49,4 +49,9 @@ class PharmacistController extends Controller
     {
         return $this->success($pharmacist);
     }
+
+    public function drugShow(Pharmacist $pharmacist)
+    {
+        return $this->success($pharmacist->drugs);
+    }
 }

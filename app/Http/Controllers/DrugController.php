@@ -19,7 +19,7 @@ class DrugController extends Controller
      */
     public function index(Authenticatable $user)
     {
-        $drugs = $user->pharmacist->drugs()->orderBy('name')->paginate();
+        $drugs = $user->pharmacist->drugs()->orderBy('name')->get();
         return $this->success($drugs);
     }
 

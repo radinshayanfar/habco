@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateDocumentsTable extends Migration
@@ -15,7 +16,7 @@ class CreateDocumentsTable extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->binary('file');
+//            $table->binary('file');
             $table->string('file_type');
             $table->boolean('verified')->default(false);
             $table->text('verification_explanation')->nullable();
@@ -23,6 +24,7 @@ class CreateDocumentsTable extends Migration
 
             $table->engine = 'InnoDB';
         });
+        DB::statement("ALTER TABLE documents ADD file MEDIUMBLOB AFTER id");
     }
 
     /**

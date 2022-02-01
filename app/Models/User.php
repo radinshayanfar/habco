@@ -21,7 +21,6 @@ class User extends Authenticatable
         'fname',
         'lname',
         'email',
-        'national_number',
         'address',
         'phone',
         'age',
@@ -54,19 +53,9 @@ class User extends Authenticatable
      * @param $phone string
      * @return User
      */
-    public static function findByPhone($phone)
+    public static function findByPhoneOrFail($phone)
     {
-        return self::firstWhere('phone', $phone);
-    }
-
-    /**
-     * Retrieves user by national number
-     * @param $national_number string
-     * @return User
-     */
-    public static function findByNN($national_number)
-    {
-        return self::firstWhere('national_number', $national_number);
+        return self::where('phone', $phone)->firstOrFail();
     }
 
     public function createRoleRecord()
@@ -89,7 +78,7 @@ class User extends Authenticatable
 
     public static function createWithRole(Request $request)
     {
-        $user = User::create(request(['email', 'phone', 'national_number', 'role']));
+        $user = User::create(request(['email', 'phone', 'role']));
 
         $user->createRoleRecord();
 

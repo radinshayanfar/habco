@@ -20,7 +20,6 @@ class PatientUserResource extends JsonResource
             'fname' => $this->fname,
             'lname' => $this->lname,
             $this->mergeWhen($role !== 'pharmacist', [
-                'national_number' => $this->national_number,
                 'address' => $this->address,
                 'phone' => $this->phone,
                 'age' => $this->age,

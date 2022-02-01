@@ -19,7 +19,6 @@ class UserFactory extends Factory
             'fname' => $this->faker->firstName(),
             'lname' => $this->faker->lastName(),
             'email' => $this->faker->unique()->freeEmail(),
-            'national_number' => $this->faker->unique()->numerify(str_repeat('#', 10)),
             'address' => $this->faker->address(),
             'phone' => $this->faker->unique()->regexify('9891\d{8}'),
             'age' => $this->faker->randomNumber(2, false),

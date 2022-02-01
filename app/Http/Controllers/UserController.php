@@ -34,7 +34,7 @@ class UserController extends Controller
             $user = User::createWithRole($request);
         } catch (QueryException $ex) {
             $startWithField = Str::after($ex->getMessage(), 'UNIQUE constraint failed: users.');
-            if (Str::startsWith($startWithField, ['email', 'national_number', 'phone'])) {
+            if (Str::startsWith($startWithField, ['email', 'phone'])) {
                 $field = Str::before($startWithField, ' ');
                 $fieldStr = preg_replace('/_/', ' ', $field);
                 throw ValidationException::withMessages([

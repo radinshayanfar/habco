@@ -26,7 +26,6 @@ class StoreUserRequest extends FormRequest
         return [
             'email' => 'required|email:rfc',
             'phone' => 'required|digits_between:8,20',
-            'national_number' => 'required|digits:10',
             'role' => 'required|alpha',
         ];
     }

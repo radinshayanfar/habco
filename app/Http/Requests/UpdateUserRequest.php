@@ -25,7 +25,6 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'phone' => 'prohibited',
-            'national_number' => 'prohibited',
             'role' => 'prohibited',
             'email' => 'email:rfc,dns',
             'fname' => 'required|regex:/^[\pL\s\-]+$/u',

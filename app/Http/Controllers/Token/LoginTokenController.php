@@ -7,9 +7,9 @@ use App\Http\FarazSMS;
 use App\Models\User;
 use App\Traits\ApiResponder;
 use GuzzleHttp\Exception\TransferException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Validation\Rule;
 
 class LoginTokenController extends Controller
 {
@@ -17,20 +17,12 @@ class LoginTokenController extends Controller
 
     public function store(Request $request)
     {
-        // Validating input data
-        $request->validate([
-            'national_number' => 'required',
-            'phone' => [
-                'required',
-                Rule::exists('users')->where(function ($query) use ($request) {
-                    return $query->where('national_number', $request->national_number);
-                }),
-            ],
-        ], [
-            'phone.exists' => 'Phone and national number doesn\'t match.',
-        ]);
-
-        $user = User::findByPhone($request->phone);
+        // Finding user by phone
+        try {
+            $user = User::findByPhoneOrFail($request->phone);
+        } catch (ModelNotFoundException) {
+            return $this->failure('No user is registered with this phone number.', 404);
+        }
 
         // Creating random OTP
         $otp = rand(1001, 9999);
